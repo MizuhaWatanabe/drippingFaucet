@@ -6,31 +6,64 @@
 #include <stdlib.h>
 #include <math.h>
 #include <vector>
-using namespace std;
+
+typedef std::vector<double> DOUBLEVECTOR;
 
 /* constants */
-#define condition     0       /* determine B.C., 0 for radius, 1 for volume */
-#define rFaucet       0.5     /* radius of the faucet */
-#define Pb	          3.86	  /* pressure at the bottom of the drop */
-#define VInitial      0.6     /* initial volume */
-#define volumeRate    1.0     /* volume rate of faucet */ 
-#define numOfDisk     300	  /* number of disk */
+#define condition   4
+#define rFaucet     0.5
+#define Pb	        3.86
+#define VInitial    0.6
+#define volumeRate  1.0
+#define numOfDisk   300
+#define epsilon     1.0e-3
 
 /* properties */
-#define rho           1.0e3	       /* density of the liquid */
-#define sigma         0.071        /* surface tension of the liquid */
-#define mu			  1.0e-3       /* viscosity of the liquid */
-#define g	          9.8          /* gravitational acceleration */
-#define ds		      1.0e-3       /* minimal change of line */	 
-#define dt0           0.01         /* minimal change of time */
-#define dPhi          M_PI * 0.01  /* minimal change of phi for plot */
+#define rho    1.0e3
+#define sigma  0.071
+#define mu	   1.0e-3
+#define g      9.8
+#define ds     1.0e-3
+#define dt0    0.01
+#define dPhi   M_PI * 0.01
+
+/* Runge-Kutta-Fehlberg constants */
+#define a2 1/4
+#define b2 1/4
+#define a3 3/8
+#define b3 3/32
+#define c3 9/32
+#define a4 12/13
+#define b4 1932/2197
+#define c4 -7200/2197
+#define d4 7296/2197
+#define a5 1
+#define b5 439/216
+#define c5 -8
+#define d5 439/216
+#define e5 -845/4104
+#define a6 1/2
+#define b6 -8/27
+#define c6 2
+#define d6 -3544/2565
+#define e6 1859/4104
+#define f6 -11/40
+#define r1 1/360
+#define r3 -128/4275
+#define r4 -2197/75240
+#define r5 1/50
+#define r6 2/55
+#define n1 25/216
+#define n3 1408/2565
+#define n4 2197/4014
+#define n5 -1/5
 
 /* characteristic values */
-double l0;	/* length */
-double m0;	/* mass */
-double P0;	/* pressure */
-double t0;  /* time */
-double mu0;	/* viscosity */
+double l0;
+double m0;
+double P0;
+double t0;
+double mu0;
 
 /* variables */
 double z, z0;
@@ -46,22 +79,25 @@ int    zInitialSize, dVInitialSize, mesh, zDiskSize, dVDiskSize, rDiskSize;
 int    i, j;
 double x, y, phi;
 
-/* vectors for plotting */
-vector<double> zInitial;
-vector<double> dVInitial;
-vector<double> zDisk;
-vector<double> dVDisk;
-vector<double> rDisk;
-vector<double> vDisk;
+/* vectors */
+DOUBLEVECTOR zInitial;
+DOUBLEVECTOR dVInitial;
+DOUBLEVECTOR zDisk;
+DOUBLEVECTOR dVDisk;
+DOUBLEVECTOR rDisk;
+DOUBLEVECTOR vDisk;
 
 /* iterator */
-vector<double>::iterator itr;
+DOUBLEVECTOR::iterator itr;
+
+/* functions */
+void RungeKuttaFehlberg();
 
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	if (condition != 1 && condition != 0){
-		printf("error : invarid condition value. 0 or 1 is available.\n");
+		printf("error : invarid condition value. 0 or 1 is available.");
 		getchar();
 		return -1;
 	}
@@ -223,10 +259,19 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf("dVDiskSize           :%d\n", dVDiskSize);
 	printf("rDiskSize            :%d\n", rDiskSize);
 	printf("\n");
-	printf("Please press enter key.\n");
+	printf("Please press enter key.");
 
 	getchar();
 	/* system("output.csv"); */
 
 	return 0;
+}
+
+
+void RungeKuttaFeehlbeg(DOUBLEVECTOR *test){
+
+	for (i = 0; i < 10; i++){
+		printf("%d\n", i);
+	}
+
 }
