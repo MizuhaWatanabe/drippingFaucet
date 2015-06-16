@@ -1,4 +1,4 @@
-// drippingFaucet.cpp : コンソール アプリケーションのエントリ ポイントを定義します。
+// drippingFaucet.cpp
 //
 
 #include "stdafx.h"
@@ -10,7 +10,7 @@
 typedef std::vector<double> DOUBLEVECTOR;
 
 /* constants */
-#define condition   4
+#define condition   0
 #define rFaucet     0.5
 #define Pb	        3.86
 #define VInitial    0.6
@@ -26,37 +26,6 @@ typedef std::vector<double> DOUBLEVECTOR;
 #define ds     1.0e-3
 #define dt0    0.01
 #define dPhi   M_PI * 0.01
-
-/* Runge-Kutta-Fehlberg constants */
-#define a2 1/4
-#define b2 1/4
-#define a3 3/8
-#define b3 3/32
-#define c3 9/32
-#define a4 12/13
-#define b4 1932/2197
-#define c4 -7200/2197
-#define d4 7296/2197
-#define a5 1
-#define b5 439/216
-#define c5 -8
-#define d5 439/216
-#define e5 -845/4104
-#define a6 1/2
-#define b6 -8/27
-#define c6 2
-#define d6 -3544/2565
-#define e6 1859/4104
-#define f6 -11/40
-#define r1 1/360
-#define r3 -128/4275
-#define r4 -2197/75240
-#define r5 1/50
-#define r6 2/55
-#define n1 25/216
-#define n3 1408/2565
-#define n4 2197/4014
-#define n5 -1/5
 
 /* characteristic values */
 double l0;
@@ -91,8 +60,8 @@ DOUBLEVECTOR vDisk;
 DOUBLEVECTOR::iterator itr;
 
 /* functions */
-void RungeKuttaFehlberg();
-
+void RungeKuttaFehlberg(DOUBLEVECTOR &, DOUBLEVECTOR &, DOUBLEVECTOR &, DOUBLEVECTOR &);
+double differential(double, double, double, double);
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -211,6 +180,13 @@ int _tmain(int argc, _TCHAR* argv[])
 		vDisk.push_back(v0);
 	}
 
+	/* calculate Runge-Kutta-Fehlberg Method */
+	RungeKuttaFehlberg(zDisk, dVDisk, rDisk, vDisk);
+	for (i = 0; i < 55; i++){
+		printf("%e\n", zDisk.at(i));
+	}
+
+
 	/* open the output file */
 	FILE *fp;
 	char *fname = "outputs/output.csv";
@@ -268,10 +244,55 @@ int _tmain(int argc, _TCHAR* argv[])
 }
 
 
-void RungeKuttaFeehlbeg(DOUBLEVECTOR *test){
+void RungeKuttaFehlberg(DOUBLEVECTOR &z, DOUBLEVECTOR &dV, DOUBLEVECTOR &r, DOUBLEVECTOR &v){
+	double a2 = 1 / 4;
+	double b2 = 1 / 4;
+	double a3 = 3 / 8;
+	double b3 = 3 / 32;
+	double c3 = 9 / 32;
+	double a4 = 12 / 13;
+	double b4 = 1932 / 2197;
+	double c4 = -7200 / 2197;
+	double d4 = 7296 / 2197;
+	double a5 = 1;
+	double b5 = 439 / 216;
+	double c5 = -8;
+	double d5 = 439 / 216;
+	double e5 = -845 / 4104;
+	double a6 = 1 / 2;
+	double b6 = -8 / 27;
+	double c6 = 2;
+	double d6 = -3544 / 2565;
+	double e6 = 1859 / 4104;
+	double f6 = -11 / 40;
+	double r1 = 1 / 360;
+	double r3 = -128 / 4275;
+	double r4 = -2197 / 75240;
+	double r5 = 1 / 50;
+	double r6 = 2 / 55;
+	double n1 = 25 / 216;
+	double n3 = 1408 / 2565;
+	double n4 = 2197 / 4014;
+	double n5 = -1 / 5;
 
 	for (i = 0; i < 10; i++){
-		printf("%d\n", i);
+		printf("%e\n", z.at(i));
+		z.at(i + 1) = differential(z.at(i), dV.at(i), r.at(i), v.at(i));
 	}
 
+}
+
+double differential(double z, double dV, double r, double v){
+	double potential;
+	double viscosity;
+	double surface;
+	double surfacePlus;
+	double surfaceMinus;
+
+	potential = 1;
+	for (j = 17; j < 20; j++){
+		z = 60003;
+		printf("hello\n");
+	}
+	return z;
 }
