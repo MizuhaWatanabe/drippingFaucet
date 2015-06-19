@@ -61,7 +61,11 @@ DOUBLEVECTOR::iterator itr;
 
 /* functions */
 void RungeKuttaFehlberg(DOUBLEVECTOR &, DOUBLEVECTOR &, DOUBLEVECTOR &, DOUBLEVECTOR &);
-double differential(double, double, double, double);
+double potentialAndViscosity(double, double, double, double, double, double, double ,double);
+double potentialAndViscosityEdge(double, double, double, double ,double);
+double surface(double, double, double, double, double, double);
+double surfacePlus(double, double, double, double, double, double, double);
+double surfaceMinus(double, double, double, double, double, double);
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -238,7 +242,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf("Please press enter key.");
 
 	getchar();
-	/* system("output.csv"); */
 
 	return 0;
 }
@@ -277,22 +280,45 @@ void RungeKuttaFehlberg(DOUBLEVECTOR &z, DOUBLEVECTOR &dV, DOUBLEVECTOR &r, DOUB
 
 	for (i = 0; i < 10; i++){
 		printf("%e\n", z.at(i));
-		z.at(i + 1) = differential(z.at(i), dV.at(i), r.at(i), v.at(i));
+	//	z.at(i + 1) = differential(z.at(i), dV.at(i), r.at(i), v.at(i));
 	}
 
 }
 
-double differential(double z, double dV, double r, double v){
+double potentialAndViscosity(double z, double zPlus, double zMinus, double dV, double dVPlus, double v, double vPlus, double vMinus){
+	double potentialAndViscosity;
 	double potential;
 	double viscosity;
-	double surface;
-	double surfacePlus;
-	double surfaceMinus;
-
 	potential = 1;
-	for (j = 17; j < 20; j++){
-		z = 60003;
-		printf("hello\n");
-	}
-	return z;
+	viscosity = -3 * (-1 * ((vPlus - v) * dVPlus) / ((zPlus - z) * (zPlus - z) * dV) + (v - vMinus) / ((z - zMinus) * (z - zMinus)));
+	potentialAndViscosity = potential + viscosity;
+	return potentialAndViscosity;
+}
+
+double potentialAndViscosityEdge(double z, double zMinus, double v, double vMinus){
+	double potentialAndViscosityEdge;
+	double potential;
+	double viscosity;
+	potential = 1;
+	viscosity = -3 * (v - vMinus) / ((z - zMinus) * (z - zMinus));
+	potentialAndViscosityEdge = potential + viscosity;
+	return potentialAndViscosityEdge;
+}
+
+double surface(double z, double zPlus, double zMinus, double r, double rPlus, double rMinus){
+	double surface;
+	surface = -M_PI * r * pow(0.25 * (zPlus - zMinus) * (zPlus - zMinus) + (r - rPlus) * (r - rPlus), 0.5) / (2 * (z - zMinus)) - M_PI * (r + rMinus) * (r - rPlus) * (r / (z - zMinus) + rPlus / (zPlus - z)) / pow((zPlus - zMinus) * (zPlus - zMinus) + (r - rPlus) * (r - rPlus), 0.5);
+	return surface;
+}
+
+double surfacePlus(double z, double zPlus, double zMinus, double zMinusMinus, double r, double rPlus, double rMinus){
+	double surfacePlus;
+	surfacePlus = 0.5 * M_PI * (r / (z - zMinus) + rMinus / (zMinus - zMinusMinus)) * pow(0.25 * (zPlus - zMinus) * (zPlus - zMinus) + (r - rPlus) * (r - rPlus), 0.5) - M_PI * (r + rMinus) * (0.5 * (zPlus - zMinus) - (r - rPlus) * r / (z - zMinus)) / pow((zPlus - zMinus) * (zPlus - zMinus) + (r - rPlus) * (r - rPlus), 0.5);
+	return surfacePlus;
+}
+
+double surfaceMinus(double z, double zPlus, double zMinus, double r, double rPlus, double rMinus){
+	double surfaceMinus;
+	surfaceMinus = M_PI * (r - rMinus) * (0.5 * (zPlus - zMinus) - (r - rPlus) * rPlus / (zPlus - z));
+	return surfaceMinus;
 }
